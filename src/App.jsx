@@ -1,35 +1,110 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.jsx
+import React from "react";
+import Layout from "./components/Layout";
+import SnippetList from "./components/SnippetList";
+import CodeEditor from "./components/CodeEditor";
+import { v4 as uuidv4 } from "uuid";
+import useLocalStorage from "./hooks/useLocalStorage";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [snippets, setSnippets] = useLocalStorage("snippets", []);
+  const [selectedSnippet, setSelectedSnippet] = React.useState(null);
+
+  const handleCreateSnippet = () => {
+    const newSnippet = {
+      id: uuidv4(),
+      title: "New Snippet",
+      code: "",
+      language: "javascript",
+      tags: [],
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+    setSnippets([...snippets, newSnippet]);
+    setSelectedSnippet(newSnippet);
+  };
+
+  const handleDeleteSnippet = (id) => {
+    const isSelected = selectedSnippet?.id === id;
+    setSnippets(snippets.filter((s) => s.id !== id));
+    if (isSelected) {
+      setSelectedSnippet(null);
+    }
+  };
+
+  const handleCodeChange = (value) => {
+    if (selectedSnippet) {
+      const updatedSnippet = {
+        ...selectedSnippet,
+        code: value,
+        updatedAt: Date.now(),
+      };
+      setSnippets(
+        snippets.map((s) => (s.id === selectedSnippet.id ? updatedSnippet : s))
+      );
+      setSelectedSnippet(updatedSnippet);
+    }
+  };
+
+  const handleTitleChange = (title) => {
+    if (selectedSnippet) {
+      const updatedSnippet = {
+        ...selectedSnippet,
+        title,
+        updatedAt: Date.now(),
+      };
+      setSnippets(
+        snippets.map((s) => (s.id === selectedSnippet.id ? updatedSnippet : s))
+      );
+      setSelectedSnippet(updatedSnippet);
+    }
+  };
+
+  const handleTagsChange = (tags) => {
+    if (selectedSnippet) {
+      const updatedSnippet = {
+        ...selectedSnippet,
+        tags,
+        updatedAt: Date.now(),
+      };
+      setSnippets(
+        snippets.map((s) => (s.id === selectedSnippet.id ? updatedSnippet : s))
+      );
+      setSelectedSnippet(updatedSnippet);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Layout>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white p-6 rounded-lg shadow">
+          <SnippetList
+            snippets={snippets}
+            onSelect={setSelectedSnippet}
+            onCreateNew={handleCreateSnippet}
+            onDelete={handleDeleteSnippet}
+            selectedId={selectedSnippet?.id}
+          />
+        </div>
+        <div className="bg-white p-6 rounded-lg shadow">
+          {selectedSnippet ? (
+            <CodeEditor
+              snippet={{
+                ...selectedSnippet,
+                onTagsChange: handleTagsChange,
+              }}
+              onCodeChange={handleCodeChange}
+              onTitleChange={handleTitleChange}
+            />
+          ) : (
+            <div className="text-center text-gray-500 mt-10">
+              <p>Select a snippet or create a new one to start coding</p>
+            </div>
+          )}
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </Layout>
+  );
 }
 
-export default App
+export default App;
