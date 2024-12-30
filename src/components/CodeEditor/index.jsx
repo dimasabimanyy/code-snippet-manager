@@ -1,26 +1,25 @@
 // src/components/CodeEditor/index.jsx
 import React, { useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
-import { javascript } from '@codemirror/lang-javascript';
 import { oneDark } from '@codemirror/theme-one-dark';
+import { LANGUAGES, getLanguageExtension } from '../../utils/languages';
 
-const CodeEditor = ({ snippet, onCodeChange, onTitleChange }) => {
+const CodeEditor = ({ snippet, onCodeChange, onTitleChange, onLanguageChange }) => {
   const [tagInput, setTagInput] = useState('');
 
   const handleTagSubmit = (e) => {
     e.preventDefault();
     if (!tagInput.trim()) return;
 
-    // Split by comma and clean up tags
     const newTags = tagInput
       .split(',')
       .map(tag => tag.trim())
-      .filter(tag => tag && !snippet.tags.includes(tag)); // Filter out empty and existing tags
+      .filter(tag => tag && !snippet.tags.includes(tag));
 
     if (newTags.length > 0) {
       const updatedTags = [...snippet.tags, ...newTags];
       snippet.onTagsChange(updatedTags);
-      setTagInput(''); // Clear input after adding
+      setTagInput('');
     }
   };
 
@@ -31,7 +30,7 @@ const CodeEditor = ({ snippet, onCodeChange, onTitleChange }) => {
 
   return (
     <div className="h-full">
-      <div className="mb-4">
+      <div className="mb-4 space-y-2">
         <input
           type="text"
           value={snippet.title}
@@ -39,12 +38,23 @@ const CodeEditor = ({ snippet, onCodeChange, onTitleChange }) => {
           placeholder="Snippet Title"
           className="w-full p-2 border rounded"
         />
+        <select
+          value={snippet.language}
+          onChange={(e) => onLanguageChange(e.target.value)}
+          className="w-full p-2 border rounded bg-white"
+        >
+          {LANGUAGES.map(lang => (
+            <option key={lang.id} value={lang.id}>
+              {lang.name}
+            </option>
+          ))}
+        </select>
       </div>
       <CodeMirror
         value={snippet.code}
         height="400px"
         theme={oneDark}
-        extensions={[javascript()]}
+        extensions={[getLanguageExtension(snippet.language)]}
         onChange={onCodeChange}
         className="border rounded"
       />

@@ -74,6 +74,20 @@ function App() {
     }
   };
 
+  const handleLanguageChange = (language) => {
+    if (selectedSnippet) {
+      const updatedSnippet = {
+        ...selectedSnippet,
+        language,
+        updatedAt: Date.now(),
+      };
+      setSnippets(
+        snippets.map((s) => (s.id === selectedSnippet.id ? updatedSnippet : s))
+      );
+      setSelectedSnippet(updatedSnippet);
+    }
+  };
+
   return (
     <Layout>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -95,6 +109,7 @@ function App() {
               }}
               onCodeChange={handleCodeChange}
               onTitleChange={handleTitleChange}
+              onLanguageChange={handleLanguageChange}
             />
           ) : (
             <div className="text-center text-gray-500 mt-10">
