@@ -1,30 +1,35 @@
 // src/components/CodeEditor/index.jsx
-import React, { useState } from 'react';
-import CodeMirror from '@uiw/react-codemirror';
-import { oneDark } from '@codemirror/theme-one-dark';
-import { LANGUAGES, getLanguageExtension } from '../../utils/languages';
+import React, { useState } from "react";
+import CodeMirror from "@uiw/react-codemirror";
+import { oneDark } from "@codemirror/theme-one-dark";
+import { LANGUAGES, getLanguageExtension } from "../../utils/languages";
 
-const CodeEditor = ({ snippet, onCodeChange, onTitleChange, onLanguageChange }) => {
-  const [tagInput, setTagInput] = useState('');
+const CodeEditor = ({
+  snippet,
+  onCodeChange,
+  onTitleChange,
+  onLanguageChange,
+}) => {
+  const [tagInput, setTagInput] = useState("");
 
   const handleTagSubmit = (e) => {
     e.preventDefault();
     if (!tagInput.trim()) return;
 
     const newTags = tagInput
-      .split(',')
-      .map(tag => tag.trim())
-      .filter(tag => tag && !snippet.tags.includes(tag));
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag && !snippet.tags.includes(tag));
 
     if (newTags.length > 0) {
       const updatedTags = [...snippet.tags, ...newTags];
       snippet.onTagsChange(updatedTags);
-      setTagInput('');
+      setTagInput("");
     }
   };
 
   const removeTag = (tagToRemove) => {
-    const updatedTags = snippet.tags.filter(tag => tag !== tagToRemove);
+    const updatedTags = snippet.tags.filter((tag) => tag !== tagToRemove);
     snippet.onTagsChange(updatedTags);
   };
 
@@ -36,14 +41,14 @@ const CodeEditor = ({ snippet, onCodeChange, onTitleChange, onLanguageChange }) 
           value={snippet.title}
           onChange={(e) => onTitleChange(e.target.value)}
           placeholder="Snippet Title"
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         />
         <select
           value={snippet.language}
           onChange={(e) => onLanguageChange(e.target.value)}
-          className="w-full p-2 border rounded bg-white"
+          className="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
-          {LANGUAGES.map(lang => (
+          {LANGUAGES.map((lang) => (
             <option key={lang.id} value={lang.id}>
               {lang.name}
             </option>

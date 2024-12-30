@@ -91,28 +91,28 @@ function App() {
   return (
     <Layout>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <SnippetList
-            snippets={snippets}
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+          <SnippetList 
+            snippets={snippets} 
             onSelect={setSelectedSnippet}
             onCreateNew={handleCreateSnippet}
             onDelete={handleDeleteSnippet}
             selectedId={selectedSnippet?.id}
           />
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
           {selectedSnippet ? (
             <CodeEditor
               snippet={{
                 ...selectedSnippet,
-                onTagsChange: handleTagsChange,
+                onTagsChange: handleTagsChange
               }}
               onCodeChange={handleCodeChange}
               onTitleChange={handleTitleChange}
               onLanguageChange={handleLanguageChange}
             />
           ) : (
-            <div className="text-center text-gray-500 mt-10">
+            <div className="text-center text-gray-500 dark:text-gray-400 mt-10">
               <p>Select a snippet or create a new one to start coding</p>
             </div>
           )}
