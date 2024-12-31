@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { LANGUAGES, getLanguageExtension } from "../../utils/languages";
+import CopyButton from "../CopyButton";
 
 const CodeEditor = ({
   snippet,
@@ -36,13 +37,16 @@ const CodeEditor = ({
   return (
     <div className="h-full">
       <div className="mb-4 space-y-2">
-        <input
-          type="text"
-          value={snippet.title}
-          onChange={(e) => onTitleChange(e.target.value)}
-          placeholder="Snippet Title"
-          className="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-        />
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={snippet.title}
+            onChange={(e) => onTitleChange(e.target.value)}
+            placeholder="Snippet Title"
+            className="flex-1 p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+          />
+          <CopyButton text={snippet.code} />
+        </div>
         <select
           value={snippet.language}
           onChange={(e) => onLanguageChange(e.target.value)}
