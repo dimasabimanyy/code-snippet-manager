@@ -1,8 +1,30 @@
 // src/components/SnippetList/index.jsx
 import React from 'react';
 import { Trash2 } from 'lucide-react';
+import Search from '../Search';
 
-const SnippetList = ({ snippets, onSelect, onCreateNew, onDelete, selectedId }) => {
+const SnippetList = ({ snippets, filters, onFiltersChange, onSelect, onCreateNew, onDelete, selectedId }) => {
+  const filteredSnippets = snippets.filter(snippet => {
+    // Filter by search text
+    if (filters.search && !snippet.title.toLowerCase().includes(filters.search.toLowerCase())) {
+      return false;
+    }
+    
+    // Filter by language
+    if (filters.language && snippet.language !== filters.language) {
+      return false;
+    }
+    
+    // Filter by tag
+    if (filters.tag && !snippet.tags.some(tag => 
+      tag.toLowerCase().includes(filters.tag.toLowerCase())
+    )) {
+      return false;
+    }
+
+    return true;
+  });
+
   return (
     <div className="h-full">
       <div className="flex justify-between mb-4">
@@ -14,9 +36,12 @@ const SnippetList = ({ snippets, onSelect, onCreateNew, onDelete, selectedId }) 
           New Snippet
         </button>
       </div>
+
+      <Search filters={filters} onFiltersChange={onFiltersChange} />
+
       <div className="space-y-2">
-        {snippets?.length > 0 ? (
-          snippets.map((snippet) => (
+        {filteredSnippets.length > 0 ? (
+          filteredSnippets.map((snippet) => (
             <div
               key={snippet.id}
               className={`p-4 border dark:border-gray-700 rounded cursor-pointer 
@@ -57,7 +82,9 @@ const SnippetList = ({ snippets, onSelect, onCreateNew, onDelete, selectedId }) 
             </div>
           ))
         ) : (
-          <p className="text-gray-500 dark:text-gray-400 text-center">No snippets yet</p>
+          <p className="text-gray-500 dark:text-gray-400 text-center">
+            {snippets.length === 0 ? 'No snippets yet' : 'No snippets match your filters'}
+          </p>
         )}
       </div>
     </div>

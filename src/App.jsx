@@ -7,8 +7,13 @@ import { v4 as uuidv4 } from "uuid";
 import useLocalStorage from "./hooks/useLocalStorage";
 
 function App() {
-  const [snippets, setSnippets] = useLocalStorage("snippets", []);
+  const [snippets, setSnippets] = useLocalStorage('snippets', []);
   const [selectedSnippet, setSelectedSnippet] = React.useState(null);
+  const [filters, setFilters] = React.useState({
+    search: '',
+    language: null,
+    tag: ''
+  });
 
   const handleCreateSnippet = () => {
     const newSnippet = {
@@ -94,6 +99,8 @@ function App() {
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
           <SnippetList 
             snippets={snippets} 
+            filters={filters}
+            onFiltersChange={setFilters}
             onSelect={setSelectedSnippet}
             onCreateNew={handleCreateSnippet}
             onDelete={handleDeleteSnippet}
