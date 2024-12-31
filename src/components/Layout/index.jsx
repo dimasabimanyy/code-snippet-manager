@@ -2,12 +2,20 @@
 import React from 'react';
 import { Sun, Moon, LogOut } from 'lucide-react';
 import { useTheme } from '../../hooks/useTheme';
+import { useAuth } from '../../context/AuthContext';
+import UserAvatar from '../UserAvatar';
 
-const Layout = ({ children, onSignOut }) => {
+const Layout = ({ children }) => {
   const [theme, setTheme] = useTheme();
+  const { user, signOut } = useAuth();
 
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) console.log('Error signing out:', error.message);
   };
 
   return (
@@ -21,14 +29,24 @@ const Layout = ({ children, onSignOut }) => {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
+              {/* User Profile */}
+              <div className="flex items-center space-x-3">
+                <UserAvatar user={user} />
+                <span className="text-sm text-gray-700 dark:text-gray-200">
+                  {user?.user_metadata?.full_name || 'User'}
+                </span>
+              </div>
+
+              {/* Rest of the buttons remain the same */}
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
               >
                 {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
               </button>
+
               <button
-                onClick={onSignOut}
+                onClick={handleSignOut}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
                 title="Sign Out"
               >
