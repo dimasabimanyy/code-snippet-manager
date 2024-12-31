@@ -1,9 +1,9 @@
 // src/components/Layout/index.jsx
 import React from 'react';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, LogOut } from 'lucide-react';
 import { useTheme } from '../../hooks/useTheme';
 
-const Layout = ({ children }) => {
+const Layout = ({ children, onSignOut }) => {
   const [theme, setTheme] = useTheme();
 
   const toggleTheme = () => {
@@ -20,12 +20,19 @@ const Layout = ({ children }) => {
                 Code Snippet Manager
               </h1>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
               >
                 {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+              </button>
+              <button
+                onClick={onSignOut}
+                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
+                title="Sign Out"
+              >
+                <LogOut size={20} />
               </button>
             </div>
           </div>
