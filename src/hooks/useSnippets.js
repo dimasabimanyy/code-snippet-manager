@@ -11,10 +11,10 @@ const useSnippets = () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from("snippets")
-        .select("*")
-        .order("created_at", { ascending: false });
-
+        .from('snippets')
+        .select('*')
+        .order('created_at', { ascending: false }); // Order by created_at DESC
+  
       if (error) throw error;
       setSnippets(data);
     } catch (err) {
@@ -27,12 +27,12 @@ const useSnippets = () => {
   const addSnippet = async (newSnippet) => {
     try {
       const { data, error } = await supabase
-        .from("snippets")
+        .from('snippets')
         .insert([newSnippet])
         .select();
-
+  
       if (error) throw error;
-      setSnippets([...snippets, data[0]]);
+      setSnippets([data[0], ...snippets]); // Add to beginning of array
       return data[0];
     } catch (err) {
       setError(err.message);
@@ -54,12 +54,16 @@ const useSnippets = () => {
         .select();
 
       if (error) throw error;
+
+      // Update local state
+      setSnippets(snippets.map((s) => (s.id === id ? data[0] : s)));
       return data[0];
     } catch (err) {
       console.error("Error updating snippet:", err);
       return null;
     }
   };
+
   const deleteSnippet = async (id) => {
     try {
       const { error } = await supabase.from("snippets").delete().eq("id", id);

@@ -6,7 +6,6 @@ import { AuthProvider } from "./context/AuthContext";
 import { useAuth } from "./context/AuthContext";
 import SnippetList from "./components/SnippetList";
 import CodeEditor from "./components/CodeEditor";
-import { v4 as uuidv4 } from "uuid";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import useSnippets from "./hooks/useSnippets";
 
@@ -28,10 +27,12 @@ function AppContent() {
     language: null,
     tag: "",
   });
+  const titleInputRef = React.useRef(null);
 
   // Add a reference to track if there are unsaved changes
   const [hasUnsavedChanges, setHasUnsavedChanges] = React.useState(false);
 
+  // Update handleCreateSnippet
   const handleCreateSnippet = async () => {
     const newSnippet = {
       title: "New Snippet",
@@ -44,6 +45,8 @@ function AppContent() {
     if (created) {
       setSelectedSnippet(created);
       setHasUnsavedChanges(false);
+      // Focus title input after a small delay to ensure component is mounted
+      setTimeout(() => titleInputRef.current?.focus(), 100);
     }
   };
 
@@ -214,6 +217,7 @@ function AppContent() {
               <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
                 {selectedSnippet ? (
                   <CodeEditor
+                  ref={titleInputRef}
                     snippet={selectedSnippet}
                     onCodeChange={handleCodeChange}
                     onTitleChange={handleTitleChange}
