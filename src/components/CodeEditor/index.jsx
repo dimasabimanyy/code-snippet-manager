@@ -10,28 +10,27 @@ const CodeEditor = ({
   onCodeChange,
   onTitleChange,
   onLanguageChange,
+  onTagsChange
 }) => {
   const [tagInput, setTagInput] = useState("");
 
   const handleTagSubmit = (e) => {
     e.preventDefault();
     if (!tagInput.trim()) return;
-
+    
     const newTags = tagInput
       .split(",")
       .map((tag) => tag.trim())
       .filter((tag) => tag && !snippet.tags.includes(tag));
 
     if (newTags.length > 0) {
-      const updatedTags = [...snippet.tags, ...newTags];
-      snippet.onTagsChange(updatedTags);
+      onTagsChange([...snippet.tags, ...newTags]); // Use prop instead of snippet method
       setTagInput("");
     }
   };
 
   const removeTag = (tagToRemove) => {
-    const updatedTags = snippet.tags.filter((tag) => tag !== tagToRemove);
-    snippet.onTagsChange(updatedTags);
+    onTagsChange(snippet.tags.filter((tag) => tag !== tagToRemove));
   };
 
   return (

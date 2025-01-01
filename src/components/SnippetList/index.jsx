@@ -75,7 +75,11 @@ const SnippetList = ({
                   </h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     {snippet.language} •{" "}
-                    {new Date(snippet.createdAt).toLocaleDateString()}
+                    {new Date(snippet.created_at).toLocaleDateString("en-US", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
                   </p>
                   {snippet.tags?.length > 0 && (
                     <div className="mt-2 flex gap-1">
