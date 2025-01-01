@@ -32,10 +32,10 @@ const useSnippets = () => {
         .select();
   
       if (error) throw error;
-      setSnippets([data[0], ...snippets]); // Add to beginning of array
+      setSnippets(currentSnippets => [data[0], ...currentSnippets]); // Use function update
       return data[0];
     } catch (err) {
-      setError(err.message);
+      console.error(err);
       return null;
     }
   };

@@ -1,9 +1,10 @@
 // src/components/SnippetList/index.jsx
-import React from "react";
+import React, { useState } from "react";
 import { Trash2 } from "lucide-react";
 import Search from "../Search";
 import CopyButton from "../CopyButton";
 import DeleteConfirmation from "../DeleteConfirmation";
+import { importSnippets, exportSnippets } from "../../utils/snippetExport";
 
 const SnippetList = ({
   snippets,
@@ -13,7 +14,10 @@ const SnippetList = ({
   onCreateNew,
   onDelete,
   selectedId,
+  onImport,
 }) => {
+  const [importing, setImporting] = useState(false);
+
   const [deleteConfirm, setDeleteConfirm] = React.useState({
     isOpen: false,
     snippetId: null,
@@ -46,16 +50,66 @@ const SnippetList = ({
     return true;
   });
 
+  const handleFileImport = async (e) => {
+    try {
+      setImporting(true);
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const snippets = await importSnippets(file);
+      await onImport(snippets);
+    } catch (error) {
+      console.error("Import failed:", error);
+    } finally {
+      setImporting(false);
+      e.target.value = "";
+    }
+  };
+
   return (
     <>
       <div className="h-full">
         <div className="flex justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            My Snippets
-          </h2>
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              My Snippets
+            </h2>
+            <div className="mt-2 flex gap-2">
+              <input
+                type="file"
+                id="import-file"
+                className="hidden"
+                accept=".json"
+                onChange={async (e) => {
+                  try {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const snippets = await importSnippets(file);
+                    // You'll need to add this prop and handler in App.jsx
+                    onImport(snippets);
+                  } catch (error) {
+                    console.error("Import failed:", error);
+                  }
+                  e.target.value = "";
+                }}
+              />{" "}
+              <button
+                onClick={() => document.getElementById("import-file").click()}
+                className="text-sm px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50"
+                disabled={importing}
+              >
+                {importing ? "Importing..." : "Import"}
+              </button>
+              <button
+                onClick={() => exportSnippets(snippets)}
+                className="text-sm px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+              >
+                Export
+              </button>
+            </div>
+          </div>
           <button
             onClick={onCreateNew}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
             New Snippet
           </button>

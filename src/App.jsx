@@ -94,6 +94,15 @@ function AppContent() {
     }
   };
 
+  const handleImport = async (importedSnippets) => {
+    for (const snippet of importedSnippets) {
+      await addSnippet({
+        ...snippet,
+        user_id: user.id
+      });
+    }
+  };
+
   // Show keyboard shortcuts helper
   const [showShortcuts, setShowShortcuts] = React.useState(false);
 
@@ -207,6 +216,7 @@ function AppContent() {
                   onCreateNew={handleCreateSnippet}
                   onDelete={handleDeleteSnippet}
                   selectedId={selectedSnippet?.id}
+                  onImport={handleImport}
                 />
               </div>
               <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
