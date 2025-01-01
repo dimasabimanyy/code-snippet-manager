@@ -8,6 +8,8 @@ import SnippetList from "./components/SnippetList";
 import CodeEditor from "./components/CodeEditor";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import useSnippets from "./hooks/useSnippets";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import PublicSnippet from './components/PublicSnippet';
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -270,10 +272,16 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<AppContent />} />
+          <Route path="/snippet/:id" element={<PublicSnippet />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
+
 
 export default App;

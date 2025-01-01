@@ -20,7 +20,8 @@ const CodeEditor = forwardRef(
     ref
   ) => {
     const [tagInput, setTagInput] = useState("");
-    const [shareStatus, setShareStatus] = useState('');
+    const [shareStatus, setShareStatus] = useState("");
+    const [copyStatus, setCopyStatus] = useState(""); // Add state for copy feedback
 
     const handleTagSubmit = (e) => {
       e.preventDefault();
@@ -118,27 +119,47 @@ const CodeEditor = forwardRef(
             </button>
           </form>
 
-          <div className="mt-4 flex items-center gap-2">
-            <button
-              onClick={async () => {
-                setShareStatus("Updating...");
-                const updated = await onShareToggle(!snippet.shared);
-                if (updated) {
-                  const url = `${window.location.origin}/snippet/${snippet.id}`;
-                  await navigator.clipboard.writeText(url);
-                  setShareStatus("Link copied!");
-                  setTimeout(() => setShareStatus(""), 2000);
-                } else {
-                  setShareStatus("Failed to share");
-                  setTimeout(() => setShareStatus(""), 2000);
-                }
-              }}
-              className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
-            >
-              {snippet.shared ? "Disable Sharing" : "Share Snippet"}
-            </button>
-            {shareStatus && (
-              <span className="text-sm text-green-500">{shareStatus}</span>
+          <div className="mt-4 space-y-2">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={async () => {
+                  setShareStatus("Updating...");
+                  const updated = await onShareToggle(!snippet.shared);
+                  if (updated) {
+                    setShareStatus("Link ready!");
+                    setTimeout(() => setShareStatus(""), 2000);
+                  }
+                }}
+                className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+              >
+                {snippet.shared ? "Disable Sharing" : "Share Snippet"}
+              </button>
+              {shareStatus && (
+                <span className="text-sm text-green-500">{shareStatus}</span>
+              )}
+            </div>
+
+            {snippet.shared && (
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  readOnly
+                  value={`${window.location.origin}/snippet/${snippet.id}`}
+                  className="flex-1 px-3 py-1 bg-gray-50 dark:bg-gray-800 border dark:border-gray-700 rounded"
+                />
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `${window.location.origin}/snippet/${snippet.id}`
+                    );
+                    setCopyStatus("Copied!");
+                    setTimeout(() => setCopyStatus(""), 2000);
+                  }}
+                  className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                >
+                  {copyStatus || "Copy"}
+                </button>
+              </div>
             )}
           </div>
         </div>
