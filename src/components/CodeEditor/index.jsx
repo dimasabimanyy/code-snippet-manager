@@ -4,6 +4,8 @@ import CodeMirror from "@uiw/react-codemirror";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { LANGUAGES, getLanguageExtension } from "../../utils/languages";
 import CopyButton from "../CopyButton";
+import { foldGutter, indentUnit } from "@codemirror/language";
+import { lineNumbers, highlightActiveLineGutter } from "@codemirror/view";
 
 const CodeEditor = forwardRef(
   (
@@ -61,10 +63,17 @@ const CodeEditor = forwardRef(
           value={snippet.code}
           height="400px"
           theme={oneDark}
-          extensions={[getLanguageExtension(snippet.language)]}
+          extensions={[
+            getLanguageExtension(snippet.language),
+            lineNumbers(),
+            foldGutter(),
+            highlightActiveLineGutter(),
+            indentUnit.of("  "),
+          ]}
           onChange={onCodeChange}
           className="border rounded"
         />
+
         <div className="mt-4">
           <form onSubmit={handleTagSubmit} className="space-y-2">
             <input

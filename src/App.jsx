@@ -81,12 +81,7 @@ function AppContent() {
   };
   useKeyboardShortcuts({
     onNew: handleCreateSnippet,
-    onSave: handleSave,
-    onDelete: () => {
-      if (selectedSnippet) {
-        handleDeleteSnippet(selectedSnippet.id);
-      }
-    },
+    onSave: handleSave
   });
 
   const handleCodeChange = (value) => {
