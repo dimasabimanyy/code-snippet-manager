@@ -32,6 +32,20 @@ function AppContent() {
   // Add a reference to track if there are unsaved changes
   const [hasUnsavedChanges, setHasUnsavedChanges] = React.useState(false);
 
+  const handleShareToggle = async (shared) => {
+    if (selectedSnippet) {
+      const updated = await updateSnippet(selectedSnippet.id, {
+        ...selectedSnippet,
+        shared,
+      });
+      if (updated) {
+        setSelectedSnippet(updated);
+        return true;
+      }
+    }
+    return false;
+  };
+
   // Update handleCreateSnippet
   const handleCreateSnippet = async () => {
     const newSnippet = {
@@ -81,7 +95,7 @@ function AppContent() {
   };
   useKeyboardShortcuts({
     onNew: handleCreateSnippet,
-    onSave: handleSave
+    onSave: handleSave,
   });
 
   const handleCodeChange = (value) => {
@@ -98,7 +112,7 @@ function AppContent() {
     for (const snippet of importedSnippets) {
       await addSnippet({
         ...snippet,
-        user_id: user.id
+        user_id: user.id,
       });
     }
   };
@@ -222,13 +236,14 @@ function AppContent() {
               <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
                 {selectedSnippet ? (
                   <CodeEditor
-                  ref={titleInputRef}
+                    ref={titleInputRef}
                     snippet={selectedSnippet}
                     onCodeChange={handleCodeChange}
                     onTitleChange={handleTitleChange}
                     onLanguageChange={handleLanguageChange}
                     onTagsChange={handleTagsChange}
                     hasUnsavedChanges={hasUnsavedChanges}
+                    onShareToggle={handleShareToggle}
                   />
                 ) : (
                   <div className="text-center text-gray-500 dark:text-gray-400 mt-10">
