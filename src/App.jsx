@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "./components/Layout";
 import Login from "./components/Auth/Login"; // Add this import
 import { AuthProvider } from "./context/AuthContext";
@@ -8,8 +8,9 @@ import SnippetList from "./components/SnippetList";
 import CodeEditor from "./components/CodeEditor";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import useSnippets from "./hooks/useSnippets";
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import PublicSnippet from './components/PublicSnippet';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import PublicSnippet from "./components/PublicSnippet";
+import Toast from "./components/Toast";
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -33,6 +34,49 @@ function AppContent() {
 
   // Add a reference to track if there are unsaved changes
   const [hasUnsavedChanges, setHasUnsavedChanges] = React.useState(false);
+
+  // Remove notification state
+  // const [notification, setNotification] = useState(null);
+  const [operationLoading, setOperationLoading] = useState(false);
+  const [toasts, setToasts] = useState([]);
+
+  const addToast = (message, type = 'info') => {
+    const id = Date.now();
+    setToasts(current => [{
+      id,
+      message,
+      type
+    }, ...current]);
+  };
+  
+  // We don't need setTimeout here anymore as it's handled in the ToastMessage component
+  const removeToast = (id) => {
+    setToasts(current => current.filter(toast => toast.id !== id));
+  };
+  
+  const handleSave = async () => {
+    if (selectedSnippet && hasUnsavedChanges) {
+      setOperationLoading(true);
+      const updated = await updateSnippet(selectedSnippet.id, selectedSnippet);
+      setOperationLoading(false);
+
+      if (updated) {
+        addToast("Saved successfully");
+      } else {
+        addToast("Failed to save", "error");
+      }
+    }
+  };
+
+  const handleDeleteSnippet = async (id) => {
+    setOperationLoading(true);
+    const success = await deleteSnippet(id);
+    setOperationLoading(false);
+
+    if (!success) {
+      setNotification({ message: "Failed to delete snippet", type: "error" });
+    }
+  };
 
   const handleShareToggle = async (shared) => {
     if (selectedSnippet) {
@@ -66,14 +110,6 @@ function AppContent() {
     }
   };
 
-  const handleDeleteSnippet = async (id) => {
-    const isSelected = selectedSnippet?.id === id;
-    await deleteSnippet(id);
-    if (isSelected) {
-      setSelectedSnippet(null);
-    }
-  };
-
   // Add auto-save with debounce
   useEffect(() => {
     if (hasUnsavedChanges && selectedSnippet) {
@@ -84,17 +120,6 @@ function AppContent() {
     }
   }, [selectedSnippet, hasUnsavedChanges]);
 
-  const handleSave = async () => {
-    if (selectedSnippet && hasUnsavedChanges) {
-      setSaveStatus("Saving...");
-      const updated = await updateSnippet(selectedSnippet.id, selectedSnippet);
-      if (updated) {
-        setHasUnsavedChanges(false);
-        setSaveStatus("Saved!");
-        setTimeout(() => setSaveStatus(""), 2000);
-      }
-    }
-  };
   useKeyboardShortcuts({
     onNew: handleCreateSnippet,
     onSave: handleSave,
@@ -167,6 +192,8 @@ function AppContent() {
 
   return (
     <div>
+      <Toast toasts={toasts} removeToast={removeToast} />
+
       {user ? (
         <Layout>
           <div className="relative">
@@ -282,6 +309,5 @@ function App() {
     </BrowserRouter>
   );
 }
-
 
 export default App;
