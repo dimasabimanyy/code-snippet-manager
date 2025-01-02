@@ -11,6 +11,7 @@ import useSnippets from "./hooks/useSnippets";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PublicSnippet from "./components/PublicSnippet";
 import Toast from "./components/Toast";
+import Footer from "./components/Footer";
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -40,20 +41,23 @@ function AppContent() {
   const [operationLoading, setOperationLoading] = useState(false);
   const [toasts, setToasts] = useState([]);
 
-  const addToast = (message, type = 'info') => {
+  const addToast = (message, type = "info") => {
     const id = Date.now();
-    setToasts(current => [{
-      id,
-      message,
-      type
-    }, ...current]);
+    setToasts((current) => [
+      {
+        id,
+        message,
+        type,
+      },
+      ...current,
+    ]);
   };
-  
+
   // We don't need setTimeout here anymore as it's handled in the ToastMessage component
   const removeToast = (id) => {
-    setToasts(current => current.filter(toast => toast.id !== id));
+    setToasts((current) => current.filter((toast) => toast.id !== id));
   };
-  
+
   const handleSave = async () => {
     if (selectedSnippet && hasUnsavedChanges) {
       setOperationLoading(true);
@@ -71,12 +75,12 @@ function AppContent() {
     try {
       const success = await deleteSnippet(id);
       if (success) {
-        addToast('Snippet deleted successfully');
+        addToast("Snippet deleted successfully");
       } else {
-        addToast('Failed to delete snippet', 'error');
+        addToast("Failed to delete snippet", "error");
       }
     } catch (error) {
-      addToast('Failed to delete snippet', 'error');
+      addToast("Failed to delete snippet", "error");
     }
   };
 
@@ -193,110 +197,115 @@ function AppContent() {
   }
 
   return (
-    <div>
-      <Toast toasts={toasts} removeToast={removeToast} />
+    <>
+      <div>
+        <Toast toasts={toasts} removeToast={removeToast} />
 
-      {user ? (
-        <Layout>
-          <div className="relative">
-            {saveStatus && (
-              <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
-                {saveStatus}
-              </div>
-            )}
-            {/* Rest of your layout */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Keyboard Shortcuts Helper */}
-              {showShortcuts && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full">
-                    <h2 className="text-xl font-bold mb-4 dark:text-white">
-                      Keyboard Shortcuts
-                    </h2>
-                    <div className="space-y-2 dark:text-gray-200">
+        {user ? (
+          <Layout>
+            <div className="relative">
+              {saveStatus && (
+                <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
+                  {saveStatus}
+                </div>
+              )}
+              {/* Rest of your layout */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Keyboard Shortcuts Helper */}
+                {showShortcuts && (
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full">
+                      <h2 className="text-xl font-bold mb-4 dark:text-white">
+                        Keyboard Shortcuts
+                      </h2>
+                      <div className="space-y-2 dark:text-gray-200">
+                        <p>
+                          <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">
+                            ⌘/Ctrl + N
+                          </kbd>{" "}
+                          New snippet
+                        </p>
+                        <p>
+                          <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">
+                            ⌘/Ctrl + S
+                          </kbd>{" "}
+                          Save changes
+                        </p>
+                        <p>
+                          <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">
+                            Delete
+                          </kbd>{" "}
+                          Delete snippet
+                        </p>
+                      </div>
+                      <button
+                        onClick={toggleShortcutsHelper}
+                        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Add Keyboard Shortcuts button to the header */}
+                <button
+                  onClick={toggleShortcutsHelper}
+                  className="fixed bottom-4 right-4 bg-gray-800 dark:bg-gray-700 text-white px-4 py-2 rounded-full shadow-lg hover:bg-gray-700 dark:hover:bg-gray-600"
+                >
+                  ⌘ Shortcuts
+                </button>
+
+                {/* Rest of your components */}
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                  <SnippetList
+                    snippets={snippets}
+                    filters={filters}
+                    onFiltersChange={setFilters}
+                    onSelect={setSelectedSnippet}
+                    onCreateNew={handleCreateSnippet}
+                    onDelete={handleDeleteSnippet}
+                    selectedId={selectedSnippet?.id}
+                    onImport={handleImport}
+                    addToast={addToast}
+                  />
+                </div>
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+                  {selectedSnippet ? (
+                    <CodeEditor
+                      ref={titleInputRef}
+                      snippet={selectedSnippet}
+                      onCodeChange={handleCodeChange}
+                      onTitleChange={handleTitleChange}
+                      onLanguageChange={handleLanguageChange}
+                      onTagsChange={handleTagsChange}
+                      hasUnsavedChanges={hasUnsavedChanges}
+                      onShareToggle={handleShareToggle}
+                    />
+                  ) : (
+                    <div className="text-center text-gray-500 dark:text-gray-400 mt-10">
                       <p>
+                        Select a snippet or create a new one to start coding
+                      </p>
+                      <p className="text-sm mt-2">
+                        Press{" "}
                         <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">
                           ⌘/Ctrl + N
                         </kbd>{" "}
-                        New snippet
-                      </p>
-                      <p>
-                        <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">
-                          ⌘/Ctrl + S
-                        </kbd>{" "}
-                        Save changes
-                      </p>
-                      <p>
-                        <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">
-                          Delete
-                        </kbd>{" "}
-                        Delete snippet
+                        to create a new snippet
                       </p>
                     </div>
-                    <button
-                      onClick={toggleShortcutsHelper}
-                      className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                      Close
-                    </button>
-                  </div>
+                  )}
                 </div>
-              )}
-
-              {/* Add Keyboard Shortcuts button to the header */}
-              <button
-                onClick={toggleShortcutsHelper}
-                className="fixed bottom-4 right-4 bg-gray-800 dark:bg-gray-700 text-white px-4 py-2 rounded-full shadow-lg hover:bg-gray-700 dark:hover:bg-gray-600"
-              >
-                ⌘ Shortcuts
-              </button>
-
-              {/* Rest of your components */}
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                <SnippetList
-                  snippets={snippets}
-                  filters={filters}
-                  onFiltersChange={setFilters}
-                  onSelect={setSelectedSnippet}
-                  onCreateNew={handleCreateSnippet}
-                  onDelete={handleDeleteSnippet}
-                  selectedId={selectedSnippet?.id}
-                  onImport={handleImport}
-                  addToast={addToast} 
-                />
-              </div>
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-                {selectedSnippet ? (
-                  <CodeEditor
-                    ref={titleInputRef}
-                    snippet={selectedSnippet}
-                    onCodeChange={handleCodeChange}
-                    onTitleChange={handleTitleChange}
-                    onLanguageChange={handleLanguageChange}
-                    onTagsChange={handleTagsChange}
-                    hasUnsavedChanges={hasUnsavedChanges}
-                    onShareToggle={handleShareToggle}
-                  />
-                ) : (
-                  <div className="text-center text-gray-500 dark:text-gray-400 mt-10">
-                    <p>Select a snippet or create a new one to start coding</p>
-                    <p className="text-sm mt-2">
-                      Press{" "}
-                      <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">
-                        ⌘/Ctrl + N
-                      </kbd>{" "}
-                      to create a new snippet
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
-          </div>
-        </Layout>
-      ) : (
-        <Login />
-      )}
-    </div>
+          </Layout>
+        ) : (
+          <Login />
+        )}
+      </div>
+      <Footer />
+    </>
   );
 }
 
