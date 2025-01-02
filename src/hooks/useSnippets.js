@@ -67,15 +67,18 @@ const useSnippets = () => {
       return null;
     }
   };
-
+  // src/hooks/useSnippets.js
   const deleteSnippet = async (id) => {
     try {
       const { error } = await supabase.from("snippets").delete().eq("id", id);
 
       if (error) throw error;
+
       setSnippets(snippets.filter((s) => s.id !== id));
+      return true; // Return true to indicate success
     } catch (err) {
-      setError(err.message);
+      console.error("Error deleting snippet:", err);
+      return false;
     }
   };
 

@@ -15,6 +15,7 @@ const SnippetList = ({
   onDelete,
   selectedId,
   onImport,
+  addToast
 }) => {
   const [importing, setImporting] = useState(false);
 
@@ -63,6 +64,11 @@ const SnippetList = ({
       setImporting(false);
       e.target.value = "";
     }
+  };
+
+  const handleDeleteConfirm = async () => {
+    await onDelete(deleteConfirm.snippetId);
+    setDeleteConfirm({ isOpen: false, snippetId: null });
   };
 
   return (
@@ -188,10 +194,7 @@ const SnippetList = ({
       <DeleteConfirmation
         isOpen={deleteConfirm.isOpen}
         onClose={() => setDeleteConfirm({ isOpen: false, snippetId: null })}
-        onConfirm={() => {
-          onDelete(deleteConfirm.snippetId);
-          setDeleteConfirm({ isOpen: false, snippetId: null });
-        }}
+        onConfirm={handleDeleteConfirm}
       />
     </>
   );

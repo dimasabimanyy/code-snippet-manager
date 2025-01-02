@@ -67,14 +67,16 @@ function AppContent() {
       }
     }
   };
-
   const handleDeleteSnippet = async (id) => {
-    setOperationLoading(true);
-    const success = await deleteSnippet(id);
-    setOperationLoading(false);
-
-    if (!success) {
-      setNotification({ message: "Failed to delete snippet", type: "error" });
+    try {
+      const success = await deleteSnippet(id);
+      if (success) {
+        addToast('Snippet deleted successfully');
+      } else {
+        addToast('Failed to delete snippet', 'error');
+      }
+    } catch (error) {
+      addToast('Failed to delete snippet', 'error');
     }
   };
 
@@ -260,6 +262,7 @@ function AppContent() {
                   onDelete={handleDeleteSnippet}
                   selectedId={selectedSnippet?.id}
                   onImport={handleImport}
+                  addToast={addToast} 
                 />
               </div>
               <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
