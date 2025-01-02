@@ -12,5 +12,7 @@ Currently, two official plugins are available:
 - Associate snippet with a project
 - Share snippet to others/invite others to your snippet, so when there is a change, they can see it. Or if an office have a snippet, they could invite their employee to visit and maintain the snippet to other generation
 
+- Multiple type: personal and space. space could include a few accounts, with hierarchical structure and restrictid access for the role
+
 # Note
 - Database (postgresQl through Supabase)
