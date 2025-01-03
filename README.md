@@ -1,18 +1,15 @@
-# React + Vite
+# Code Snippet Vault
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Future Feature
+Currently i'm planning to add several new features to enhance the snippet management experience:
 
-Currently, two official plugins are available:
+- Associate Snippets with Offices: Allow users to categorize snippets by office, making it easier to manage company-specific code.
+- Associate Snippets with Projects: Link snippets to specific projects, helping teams maintain and organize reusable code in context.
+- Snippet Sharing & Collaboration: Share snippets with others or invite teammates to collaborate. When a snippet is updated, everyone with access will be notified. Teams can maintain snippets together, ensuring consistency across generations of employees.
+- VS Code Integration: Integration with Visual Studio Code to streamline workflows. Easily access and manage your snippets directly within the code editor.
+- Multiple Snippet Types: Support for Personal and Space snippet types. A Space can include multiple accounts with hierarchical structures and restricted access for different roles.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Feel free to request any new feature!
 
-# Future Feature
-- Associate snippet with an office
-- Associate snippet with a project
-- Share snippet to others/invite others to your snippet, so when there is a change, they can see it. Or if an office have a snippet, they could invite their employee to visit and maintain the snippet to other generation
-
-- Multiple type: personal and space. space could include a few accounts, with hierarchical structure and restrictid access for the role
-
-# Note
-- Database (postgresQl through Supabase)
+## Note
+- Database: The app uses PostgreSQL via Supabase for database management. Supabase provides a scalable backend solution to manage your snippets and user data.
