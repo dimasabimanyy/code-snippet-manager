@@ -16,6 +16,8 @@ const CodeEditor = forwardRef(
       onLanguageChange,
       onTagsChange,
       onShareToggle,
+      onCategoryChange,
+      categories
     },
     ref
   ) => {
@@ -56,17 +58,31 @@ const CodeEditor = forwardRef(
             />
             <CopyButton text={snippet.code} />
           </div>
-          <select
-            value={snippet.language}
-            onChange={(e) => onLanguageChange(e.target.value)}
-            className="w-full p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-          >
-            {LANGUAGES.map((lang) => (
-              <option key={lang.id} value={lang.id}>
-                {lang.name}
-              </option>
-            ))}
-          </select>
+          <div className="flex gap-2">
+            <select
+              value={snippet.language}
+              onChange={(e) => onLanguageChange(e.target.value)}
+              className="flex-1 p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+            >
+              {LANGUAGES.map((lang) => (
+                <option key={lang.id} value={lang.id}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
+            <select
+              value={snippet.category_id || ""}
+              onChange={(e) => onCategoryChange(e.target.value || null)}
+              className="flex-1 p-2 border dark:border-gray-700 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+            >
+              <option value="">No Category</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <CodeMirror
           value={snippet.code}

@@ -1,27 +1,23 @@
 // src/components/Layout/index.jsx
-import React from 'react';
-import { Sun, Moon, LogOut } from 'lucide-react';
-import { useTheme } from '../../hooks/useTheme';
-import { useAuth } from '../../context/AuthContext';
-import UserAvatar from '../UserAvatar';
+import React from "react";
+import { Sun, Moon, LogOut } from "lucide-react";
+import { useTheme } from "../../hooks/useTheme";
+import { useAuth } from "../../context/AuthContext";
+import UserAvatar from "../UserAvatar";
 
+// src/components/Layout/index.jsx
 const Layout = ({ children }) => {
   const [theme, setTheme] = useTheme();
   const { user, signOut } = useAuth();
 
   const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
-
-  const handleSignOut = async () => {
-    const { error } = await signOut();
-    if (error) console.log('Error signing out:', error.message);
+    setTheme(theme === "light" ? "dark" : "light");
   };
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
       <nav className="bg-white dark:bg-gray-800 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-full mx-auto px-4">
           <div className="flex justify-between h-16">
             <div className="flex-shrink-0 flex items-center">
               <h1 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -29,26 +25,25 @@ const Layout = ({ children }) => {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              {/* User Profile */}
               <div className="flex items-center space-x-3">
-                <UserAvatar user={user} />
+                <img
+                  src={user?.user_metadata?.avatar_url}
+                  alt={user?.user_metadata?.full_name}
+                  className="h-8 w-8 rounded-full"
+                />
                 <span className="text-sm text-gray-700 dark:text-gray-200">
-                  {user?.user_metadata?.full_name || 'User'}
+                  {user?.user_metadata?.full_name}
                 </span>
               </div>
-
-              {/* Rest of the buttons remain the same */}
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
               >
-                {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
               </button>
-
               <button
-                onClick={handleSignOut}
+                onClick={signOut}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"
-                title="Sign Out"
               >
                 <LogOut size={20} />
               </button>
@@ -56,9 +51,7 @@ const Layout = ({ children }) => {
           </div>
         </div>
       </nav>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {children}
-      </main>
+      <main className="max-w-full">{children}</main>
     </div>
   );
 };
