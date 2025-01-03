@@ -26,15 +26,12 @@ const Layout = ({ children }) => {
             </div>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-3">
-                <img
-                  src={user?.user_metadata?.avatar_url}
-                  alt={user?.user_metadata?.full_name}
-                  className="h-8 w-8 rounded-full"
-                />
+                <UserAvatar user={user} />
                 <span className="text-sm text-gray-700 dark:text-gray-200">
-                  {user?.user_metadata?.full_name}
+                  {user?.user_metadata?.full_name || "User"}
                 </span>
               </div>
+
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600"

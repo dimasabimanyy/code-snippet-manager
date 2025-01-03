@@ -42,7 +42,6 @@ const useSnippets = () => {
 
   const updateSnippet = async (id, updates) => {
     try {
-      console.log("Updating snippet:", updates); // Debug log
       const { data, error } = await supabase
         .from("snippets")
         .update({
@@ -50,16 +49,12 @@ const useSnippets = () => {
           code: updates.code,
           language: updates.language,
           tags: updates.tags || [],
-          shared: updates.shared,
+          category_id: updates.category_id, // Add this line
         })
         .eq("id", id)
         .select();
 
-      if (error) {
-        console.error("Update error:", error);
-        throw error;
-      }
-
+      if (error) throw error;
       setSnippets(snippets.map((s) => (s.id === id ? data[0] : s)));
       return data[0];
     } catch (err) {
@@ -67,6 +62,7 @@ const useSnippets = () => {
       return null;
     }
   };
+
   // src/hooks/useSnippets.js
   const deleteSnippet = async (id) => {
     try {
