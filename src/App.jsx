@@ -104,10 +104,16 @@ function AppContent() {
 
   const handleShareToggle = async (shared) => {
     if (selectedSnippet) {
+      console.log({ selectedSnippet });
+      console.log({ shared });
+
       const updated = await updateSnippet(selectedSnippet.id, {
         ...selectedSnippet,
         shared,
       });
+
+      console.log({ updated })
+
       if (updated) {
         setSelectedSnippet(updated);
         return true;

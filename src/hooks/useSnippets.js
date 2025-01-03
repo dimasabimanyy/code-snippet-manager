@@ -49,6 +49,7 @@ const useSnippets = () => {
           code: updates.code,
           language: updates.language,
           tags: updates.tags || [],
+          shared: updates.shared,
           category_id: updates.category_id, // Add this line
         })
         .eq("id", id)

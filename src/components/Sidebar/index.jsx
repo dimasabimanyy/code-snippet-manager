@@ -19,8 +19,6 @@ const CategoryItem = ({
     (s) => s.category_id === category.id
   );
 
-  console.log({ category })
-
   return (
     <div className="space-y-1">
       <div
