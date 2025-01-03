@@ -304,7 +304,6 @@ function AppContent() {
           <Login />
         )}
       </div>
-      <Footer />
     </>
   );
 }
