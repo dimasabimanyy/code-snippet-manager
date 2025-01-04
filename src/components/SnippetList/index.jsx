@@ -15,7 +15,7 @@ const SnippetList = ({
   onDelete,
   selectedId,
   onImport,
-  addToast
+  addToast,
 }) => {
   const [importing, setImporting] = useState(false);
 
@@ -76,9 +76,15 @@ const SnippetList = ({
       <div className="h-full">
         <div className="flex justify-between mb-4">
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-              My Snippets
-            </h2>
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                Recent Snippets
+              </h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Latest 10 snippets for quick access
+              </p>
+            </div>
+
             <div className="mt-2 flex gap-2">
               <input
                 type="file"

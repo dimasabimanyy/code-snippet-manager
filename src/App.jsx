@@ -19,6 +19,7 @@ function AppContent() {
   const { user, loading } = useAuth();
   const {
     snippets,
+    recentSnippets,
     loading: snippetsLoading,
     addSnippet,
     updateSnippet,
@@ -148,7 +149,7 @@ function AppContent() {
       language: "javascript",
       tags: [],
       category_id: categoryId, // Use the actual category ID
-      user_id: user.id
+      user_id: user.id,
     };
     const created = await addSnippet(newSnippet);
     if (created) {
@@ -341,7 +342,7 @@ function AppContent() {
                   {/* Rest of your components */}
                   <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
                     <SnippetList
-                      snippets={snippets}
+                      snippets={recentSnippets} // Only recent snippets
                       filters={filters}
                       onFiltersChange={setFilters}
                       onSelect={setSelectedSnippet}

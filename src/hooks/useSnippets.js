@@ -4,10 +4,11 @@ import { supabase } from "../config/supabase";
 
 const useSnippets = () => {
   const [snippets, setSnippets] = useState([]);
+  const [recentSnippets, setRecentSnippets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchSnippets = async () => {
+  const fetchAllSnippets = async () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
@@ -27,15 +28,16 @@ const useSnippets = () => {
   const addSnippet = async (newSnippet) => {
     try {
       const { data, error } = await supabase
-        .from("snippets")
+        .from('snippets')
         .insert([newSnippet])
         .select();
 
       if (error) throw error;
-      setSnippets((currentSnippets) => [data[0], ...currentSnippets]); // Use function update
+      setSnippets([data[0], ...snippets]);
+      await fetchRecentSnippets(); // Refresh recent snippets
       return data[0];
     } catch (err) {
-      console.error(err);
+      console.error('Error adding snippet:', err);
       return null;
     }
   };
@@ -79,18 +81,39 @@ const useSnippets = () => {
     }
   };
 
+  const fetchRecentSnippets = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("snippets")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(2);
+
+      if (error) throw error;
+      setRecentSnippets(data);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   useEffect(() => {
-    fetchSnippets();
+    const fetchData = async () => {
+      setLoading(true);
+      await Promise.all([fetchAllSnippets(), fetchRecentSnippets()]);
+      setLoading(false);
+    };
+
+    fetchData();
   }, []);
 
   return {
-    snippets,
+    snippets, // For sidebar
+    recentSnippets, // For snippet list
     loading,
     error,
     addSnippet,
     updateSnippet,
-    deleteSnippet,
-    refreshSnippets: fetchSnippets,
+    deleteSnippet
   };
 };
 
