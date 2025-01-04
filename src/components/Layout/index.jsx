@@ -1,14 +1,15 @@
 // src/components/Layout/index.jsx
-import React from "react";
-import { Sun, Moon, LogOut } from "lucide-react";
+import React, { useState } from "react";
+import { Sun, Moon, LogOut, Menu } from "lucide-react";
 import { useTheme } from "../../hooks/useTheme";
 import { useAuth } from "../../context/AuthContext";
 import UserAvatar from "../UserAvatar";
 
 // src/components/Layout/index.jsx
-const Layout = ({ children }) => {
+const Layout = ({ children, sidebar }) => {
   const [theme, setTheme] = useTheme();
   const { user, signOut } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
@@ -19,7 +20,13 @@ const Layout = ({ children }) => {
       <nav className="bg-white dark:bg-gray-800 shadow-sm">
         <div className="max-w-full mx-auto px-4">
           <div className="flex justify-between h-16">
-            <div className="flex-shrink-0 flex items-center">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <Menu size={20} />
+              </button>
               <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                 Code Snippet Manager
               </h1>
@@ -48,7 +55,21 @@ const Layout = ({ children }) => {
           </div>
         </div>
       </nav>
-      <main className="max-w-full">{children}</main>
+      <div className="flex h-[calc(100vh-4rem)]">
+        <div
+          className={`
+            transform transition-all duration-300 ease-in-out
+            ${sidebarOpen ? "w-64 translate-x-0" : "w-0 -translate-x-full"}
+          `}
+        >
+          {sidebarOpen && sidebar} {/* Render sidebar content */}
+        </div>
+
+        <div className="flex-1 overflow-hidden">
+          {children} {/* Render main content */}
+        </div>
+      </div>
+      {/* <main className="max-w-full">{children}</main> */}
     </div>
   );
 };

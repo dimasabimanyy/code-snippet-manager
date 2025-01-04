@@ -112,7 +112,7 @@ function AppContent() {
         shared,
       });
 
-      console.log({ updated })
+      console.log({ updated });
 
       if (updated) {
         setSelectedSnippet(updated);
@@ -237,10 +237,22 @@ function AppContent() {
       <Toast toasts={toasts} removeToast={removeToast} />
 
       {user ? (
-        <Layout>
+        <Layout
+          sidebar={
+            <Sidebar
+              categories={categories}
+              snippets={snippets}
+              onSelectSnippet={setSelectedSnippet}
+              selectedSnippetId={selectedSnippet?.id}
+              onAddCategory={() =>
+                setCategoryModal({ isOpen: true, editData: null })
+              }
+            />
+          }
+        >
           <div className="h-[calc(100vh-4rem)] flex">
             {/* Sidebar */}
-            <Sidebar
+            {/* <Sidebar
               categories={categories}
               snippets={snippets}
               onSelectSnippet={setSelectedSnippet}
@@ -252,7 +264,7 @@ function AppContent() {
                 setCategoryModal({ isOpen: true, editData: category })
               }
               onDeleteCategory={deleteCategory}
-            />
+            /> */}
 
             <div className="relative">
               {saveStatus && (
