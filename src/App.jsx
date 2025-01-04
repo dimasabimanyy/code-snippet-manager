@@ -123,14 +123,32 @@ function AppContent() {
   };
 
   // In App.jsx
-  const handleCreateSnippet = async (categoryId = null) => {
+  const handleCreateSnippet = async () => {
     const newSnippet = {
       title: "New Snippet",
       code: "",
       language: "javascript",
       tags: [],
-      category_id: categoryId,
+      category_id: null,
       user_id: user.id,
+    };
+
+    const created = await addSnippet(newSnippet);
+
+    if (created) {
+      setSelectedSnippet(created);
+      setHasUnsavedChanges(false);
+    }
+  };
+
+  const handleCreateSnippetInCategory = async (categoryId) => {
+    const newSnippet = {
+      title: "New Snippet",
+      code: "",
+      language: "javascript",
+      tags: [],
+      category_id: categoryId, // Use the actual category ID
+      user_id: user.id
     };
     const created = await addSnippet(newSnippet);
     if (created) {
