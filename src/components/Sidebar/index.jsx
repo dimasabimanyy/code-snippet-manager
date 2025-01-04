@@ -60,6 +60,11 @@ const Sidebar = ({
   selectedSnippetId,
   onAddCategory,
 }) => {
+  // Get uncategorized snippets and sort by newest
+  const uncategorizedSnippets = snippets
+    .filter((s) => !s.category_id)
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
   return (
     <div className="w-64 h-full bg-white dark:bg-gray-800 border-r dark:border-gray-700">
       <div className="p-4">
@@ -73,6 +78,23 @@ const Sidebar = ({
           </button>
         </div>
         <div className="space-y-2">
+          <div className="space-y-1">
+            {uncategorizedSnippets.map((snippet) => (
+              <div
+                key={snippet.id}
+                onClick={() => onSelectSnippet(snippet)}
+                className={`flex items-center gap-2 px-2 py-1 rounded cursor-pointer ${
+                  selectedSnippetId === snippet.id
+                    ? "bg-blue-50 dark:bg-blue-900/50"
+                    : "hover:bg-gray-100 dark:hover:bg-gray-700"
+                }`}
+              >
+                <File size={16} />
+                <span className="text-sm truncate">{snippet.title}</span>
+              </div>
+            ))}
+          </div>
+
           {categories.map((category) => (
             <CategoryItem
               key={category.id}
